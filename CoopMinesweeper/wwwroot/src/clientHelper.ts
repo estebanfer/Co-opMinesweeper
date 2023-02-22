@@ -1,5 +1,6 @@
 abstract class ClientHelper {
-    public static handleGame(affectedFields: Field[], flagsLeft?: number): void {
+    //TODO Negative flags
+    public static handleGame(affectedFields: Field[], flagsLeft?: number, negativeFlagsLeft?: number): void {
         for (let i: number = 0, len: number = affectedFields.length; i < len; i++) {
             const field: Field = affectedFields[i];
             matrix[field.row][field.column] = field;

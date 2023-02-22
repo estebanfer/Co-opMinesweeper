@@ -43,8 +43,11 @@ abstract class Renderer {
             // Reset field
             gameCanvasContext.clearRect(field.startX, field.startY, 30, 30);
 
-            if (field.flag) {
+            if (field.flag === FlagType.Flag) {
                 gameCanvasContext.drawImage(flagImage, field.startX, field.startY);
+                continue;
+            } else if (field.flag === FlagType.NegativeFlag) {
+                gameCanvasContext.drawImage(negativeFlagImage, field.startX, field.startY);
                 continue;
             }
 
@@ -56,6 +59,10 @@ abstract class Renderer {
                 Renderer.fillField(field, "rgba(203, 66, 66, 1)");
 
                 gameCanvasContext.drawImage(bombImage, field.startX, field.startY);
+            } else if (field.type === FieldType.NegativeBomb) {
+                Renderer.fillField(field, "rgba(203, 66, 66, 1)");
+
+                gameCanvasContext.drawImage(negativeBombImage, field.startX, field.startY);
             } else if (field.type === FieldType.Number) {
                 Renderer.fillField(field, "rgba(194, 219, 198, 1)");
 

@@ -7,7 +7,7 @@ class Field {
 
     public number: number;
     public revealed: boolean;
-    public flag: boolean;
+    public flag: FlagType;
     public type: FieldType;
 
     constructor(x: number, y: number, row: number, column: number) {
@@ -19,9 +19,15 @@ class Field {
 
         this.number = 0;
         this.revealed = false;
-        this.flag = false;
+        this.flag = FlagType.NoFlag;
         this.type = FieldType.None;
     }
+}
+
+enum FlagType {
+    NoFlag,
+    Flag,
+    NegativeFlag
 }
 
 enum FieldType {
@@ -29,7 +35,13 @@ enum FieldType {
     NoBomb,
     Empty,
     Number,
-    Bomb
+    Bomb,
+    NegativeBomb
+}
+
+enum GameMode {
+    Normal,
+    NegativeBombs
 }
 
 class MousePosition {
@@ -72,30 +84,43 @@ enum ClientEventType {
     LatencyResponse
 }
 
+class GameConfiguration {
+    public gamemode!: GameMode | undefined;
+    constructor(gamemode?: GameMode) {
+        this.gamemode = gamemode;
+    }
+}
+
 class ServerDataObject {
     public mousePosition!: MousePosition;
     public stamp!: number;
     public affectedFields!: Field[];
     public flagsLeft!: number | undefined;
+    public negativeFlagsLeft!: number | undefined;
     public elapsedTime!: number | undefined;
     public serverEventType: ServerEventType;
+    public config!: GameConfiguration;
 
     constructor(serverEventType: ServerEventType.NewGame);
     constructor(serverEventType: ServerEventType.Move, mousePosition: MousePosition);
+    constructor(serverEventType: ServerEventType.ConfigChange, config: GameConfiguration);
     constructor(serverEventType: ServerEventType.LatencyTest | ServerEventType.LatencyResponse, stamp: number);
-    constructor(serverEventType: ServerEventType.Game, affectedFields: Field[], flagsLeft?: number);
+    constructor(serverEventType: ServerEventType.Game, affectedFields: Field[], flagsLeft?: number, negativeFlagsLeft?: number);
     constructor(serverEventType: ServerEventType.GameWon, affectedFields: Field[], elapsedTime: number);
     constructor(serverEventType: ServerEventType.GameOver, affectedFields: Field[], elapsedTime: number);
-    constructor(serverEventType: ServerEventType, arg?: MousePosition | number | Field[], arg2?: number) {
+    constructor(serverEventType: ServerEventType, arg?: MousePosition | number | Field[] | GameConfiguration, arg2?: number, arg3?: number) {
         if (arg) {
             if (arg instanceof MousePosition) {
                 this.mousePosition = arg;
+            } else if (arg instanceof GameConfiguration) {
+                this.config = arg;
             } else if (typeof arg === "number") {
                 this.stamp = arg;
             } else { // Game
                 this.affectedFields = arg;
                 if (serverEventType === ServerEventType.Game) {
                     this.flagsLeft = arg2;
+                    this.negativeFlagsLeft = arg3;
                 } else {
                     this.elapsedTime = arg2;
                 }
@@ -113,5 +138,6 @@ enum ServerEventType {
     GameOver,
     NewGame,
     LatencyTest,
-    LatencyResponse
+    LatencyResponse,
+    ConfigChange
 }

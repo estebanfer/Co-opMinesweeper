@@ -1,4 +1,15 @@
 abstract class FieldHelper {
+    public static isFlag(type: FlagType): boolean {
+        return type === FlagType.Flag || type === FlagType.NegativeFlag
+    }
+    public static isBomb(type: FieldType): boolean {
+        return type === FieldType.Bomb || type === FieldType.NegativeBomb
+    }
+    private static bombValues: Map<FieldType, number> = new Map([[FieldType.Bomb, 1], [FieldType.NegativeBomb, -1]]);
+    public static bombValue(type: FieldType): number {
+        return this.bombValues.get(type) || 0;
+    }
+
     public static initializeFields(): void {
         let y: number = 2;
         for (let row: number = 0; row < 16; row++) {
@@ -40,7 +51,7 @@ abstract class FieldHelper {
         field.revealed = true;
         allFields.push(field);
 
-        if (field.flag || field.type === FieldType.Bomb || field.type === FieldType.Number) {
+        if (FieldHelper.isFlag(field.flag) || FieldHelper.isBomb(field.type) || field.type === FieldType.Number) {
             return;
         } else {
             const surroundingFields: Field[] = FieldHelper.getSurroundingFieldsForReveal(field);
@@ -98,51 +109,51 @@ abstract class FieldHelper {
 
         if (matrix[row - 1]) {
             const topLeft: Field = matrix[row - 1][column - 1];
-            if (topLeft && !topLeft.revealed && !topLeft.flag) {
+            if (topLeft && !topLeft.revealed && topLeft.flag == FlagType.NoFlag) {
                 topLeft.revealed = true;
                 surroundingFields.push(topLeft);
             }
 
             const topCenter: Field = matrix[row - 1][column];
-            if (!topCenter.revealed && !topCenter.flag) {
+            if (!topCenter.revealed && topCenter.flag == FlagType.NoFlag) {
                 topCenter.revealed = true;
                 surroundingFields.push(topCenter);
             }
 
             const topRight: Field = matrix[row - 1][column + 1];
-            if (topRight && !topRight.revealed && !topRight.flag) {
+            if (topRight && !topRight.revealed && topRight.flag == FlagType.NoFlag) {
                 topRight.revealed = true;
                 surroundingFields.push(topRight);
             }
         }
 
         const left: Field = matrix[row][column - 1];
-        if (left && !left.revealed && !left.flag) {
+        if (left && !left.revealed && left.flag == FlagType.NoFlag) {
             left.revealed = true;
             surroundingFields.push(left);
         }
 
         const right: Field = matrix[row][column + 1];
-        if (right && !right.revealed && !right.flag) {
+        if (right && !right.revealed && right.flag == FlagType.NoFlag) {
             right.revealed = true;
             surroundingFields.push(right);
         }
 
         if (matrix[row + 1]) {
             const bottomLeft: Field = matrix[row + 1][column - 1];
-            if (bottomLeft && !bottomLeft.revealed && !bottomLeft.flag) {
+            if (bottomLeft && !bottomLeft.revealed && bottomLeft.flag == FlagType.NoFlag) {
                 bottomLeft.revealed = true;
                 surroundingFields.push(bottomLeft);
             }
 
             const bottomCenter: Field = matrix[row + 1][column];
-            if (!bottomCenter.revealed && !bottomCenter.flag) {
+            if (!bottomCenter.revealed && bottomCenter.flag == FlagType.NoFlag) {
                 bottomCenter.revealed = true;
                 surroundingFields.push(bottomCenter);
             }
 
             const bottomRight: Field = matrix[row + 1][column + 1];
-            if (bottomRight && !bottomRight.revealed && !bottomRight.flag) {
+            if (bottomRight && !bottomRight.revealed && bottomRight.flag == FlagType.NoFlag) {
                 bottomRight.revealed = true;
                 surroundingFields.push(bottomRight);
             }
@@ -159,7 +170,7 @@ abstract class FieldHelper {
 
                 field.number = 0;
                 field.revealed = false;
-                field.flag = false;
+                field.flag = FlagType.NoFlag;
                 field.type = FieldType.None;
             }
         }
@@ -174,28 +185,7 @@ abstract class FieldHelper {
         }
     }
 
-    // todo: Optimize this
-    public static createBombs(): void {
-        let numberOfBombs: number = 0;
-        let row: number;
-        let column: number;
-
-        while (numberOfBombs < 99) {
-            row = Helpers.getRandomInt(0, 15);
-            column = Helpers.getRandomInt(0, 29);
-
-            if (matrix[row][column].type === FieldType.Bomb) {
-                continue;
-            }
-
-            if (matrix[row][column].type === FieldType.NoBomb) {
-                continue;
-            }
-
-            matrix[row][column].type = FieldType.Bomb;
-            numberOfBombs++;
-        }
-    }
+    public static createBombs: () => void = createBombsDefault;
 
     public static createNumbers(): void {
         let field: Field;
@@ -206,16 +196,19 @@ abstract class FieldHelper {
             for (let column: number = 0; column < 30; column++) {
                 field = matrix[row][column];
 
-                if (field.type === FieldType.Bomb) {
+                if (FieldHelper.isBomb(field.type)) {
                     continue;
                 }
 
                 surroundingFields = FieldHelper.getSurroundingFields(field);
+                let hasBomb : boolean = false
                 bombs = surroundingFields.reduce((accumulator: number, currentField: Field) => {
-                    return accumulator + (currentField.type === FieldType.Bomb ? 1 : 0);
+                    const bombValue = FieldHelper.bombValue(currentField.type);
+                    if (bombValue != 0) { hasBomb = true };
+                    return accumulator + bombValue;
                 }, 0);
 
-                if (bombs === 0) {
+                if (!hasBomb) {
                     field.type = FieldType.Empty;
                 } else {
                     field.type = FieldType.Number;
@@ -233,7 +226,7 @@ abstract class FieldHelper {
             for (let column: number = 0; column < 30; column++) {
                 field = matrix[row][column];
 
-                if (field.type === FieldType.Bomb) {
+                if (FieldHelper.isBomb(field.type)) {
                     field.revealed = true;
                     fields.push(field);
                 }

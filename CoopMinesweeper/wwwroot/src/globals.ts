@@ -3,7 +3,10 @@
 let matrix: Field[][] = new Array<Field[]>(16);
 let previousActiveField: Field;
 
+let gameConfiguration: GameConfiguration = new GameConfiguration(GameMode.Normal)
+
 let flagsLeft: number = 99;
+let negativeFlagsLeft: number = 0;
 
 let elapsedTime: number = 0;
 let timerIntervalId: number = 0;
@@ -42,8 +45,14 @@ cursorImage.src = "cursor.png";
 let flagImage: HTMLImageElement = new Image();
 flagImage.src = "flag.png";
 
+let negativeFlagImage: HTMLImageElement = new Image();
+negativeFlagImage.src = "negativeFlag.png";
+
 let bombImage: HTMLImageElement = new Image();
 bombImage.src = "bomb.png";
+
+let negativeBombImage: HTMLImageElement = new Image();
+negativeBombImage.src = "negativeBomb.png";
 
 const overlay: HTMLElement = document.getElementById("overlay") as HTMLElement;
 const overlayStatus: HTMLElement = document.getElementById("overlay-status") as HTMLElement;
@@ -59,6 +68,7 @@ let timerElement: HTMLElement = document.getElementById("timer") as HTMLElement;
 // Host only
 const gameIdText: HTMLElement = document.getElementById("game-id-text") as HTMLElement;
 const copyToClipboardButton: HTMLButtonElement = document.getElementById("copy-to-clipboard-button") as HTMLButtonElement;
+const gamemodeSelectElement: HTMLSelectElement = document.getElementById("setting-gamemode") as HTMLSelectElement;
 
 // Client only
 const gameIdInput: HTMLInputElement = document.getElementById("game-id-input") as HTMLInputElement;

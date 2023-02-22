@@ -21,6 +21,15 @@
             </div>
 
             <div id="overlay-status"></div>
+            <div id="settings"> <!-- TODO: make it look better -->
+                <div class="setting">
+                    Game mode
+                    <select id="setting-gamemode">
+                        <option value="1" selected>Normal</option>
+                        <option value="2" selected>Negative Mines</option>
+                    </select>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -63,8 +72,10 @@
     <script src="simplepeer.min.js"></script>
     <script src="signalr.min.js"></script>
 
-    <script src="dist/globals.js"></script>
     <script src="dist/types.js"></script>
+    <script src="dist/globals.js"></script>
+    <script src="dist/createBombs.js"></script>
+    <script src="dist/handleFlag.js"></script>
     <script src="dist/gameHelper.js"></script>
     <script src="dist/renderer.js"></script>
     <script src="dist/fieldHelper.js"></script>

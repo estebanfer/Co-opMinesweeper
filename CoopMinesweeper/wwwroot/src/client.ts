@@ -39,12 +39,14 @@ clientPeer.on("data", (data: any): void => {
     const serverDataObject: ServerDataObject = JSON.parse(data);
     if (serverDataObject.serverEventType === ServerEventType.LatencyTest) {
         clientPeer.send(JSON.stringify(new ClientDataObject(ClientEventType.LatencyResponse, serverDataObject.stamp)));
+    } else if (serverDataObject.serverEventType === ServerEventType.ConfigChange) {
+        GameHelper.updateConfig(serverDataObject.config)
     } else if (serverDataObject.serverEventType === ServerEventType.LatencyResponse) {
         Helpers.processLatency(serverDataObject.stamp);
     } else if (serverDataObject.serverEventType === ServerEventType.Move) {
         Renderer.drawMouse(serverDataObject.mousePosition);
     } else if (serverDataObject.serverEventType === ServerEventType.Game) {
-        ClientHelper.handleGame(serverDataObject.affectedFields, serverDataObject.flagsLeft);
+        ClientHelper.handleGame(serverDataObject.affectedFields, serverDataObject.flagsLeft, serverDataObject.negativeFlagsLeft);
     } else if (serverDataObject.serverEventType === ServerEventType.GameWon) {
         ClientHelper.handleGameWon(serverDataObject.affectedFields, serverDataObject.elapsedTime!);
     } else if (serverDataObject.serverEventType === ServerEventType.GameOver) {
@@ -102,7 +104,7 @@ otherMouseCanvas.addEventListener("click", (e: MouseEvent): void => {
     const mousePosition: MousePosition = Helpers.getMousePosition(otherMouseCanvas, e);
     const field: Field = FieldHelper.getField(mousePosition.x, mousePosition.y);
 
-    if (field.revealed || field.flag) {
+    if (field.revealed || FieldHelper.isFlag(field.flag)) {
         return;
     }
 

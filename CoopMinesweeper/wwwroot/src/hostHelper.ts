@@ -17,7 +17,7 @@ abstract class HostHelper {
         // }
 
         let affectedFields: Field[] = [];
-        if (field.type === FieldType.Bomb) {
+        if (FieldHelper.isBomb(field.type)) {
             GameHelper.stopTimer();
             GameHelper.showNewGameScreen();
             affectedFields = FieldHelper.getAllBombs();
@@ -37,29 +37,14 @@ abstract class HostHelper {
         Renderer.drawAffectedFields(affectedFields);
     }
 
-    public static handleFlag(field: Field): void {
-        // if (field.revealed) {
-        //     return [];
-        // }
-
-        if (!timerIntervalId) {
-            GameHelper.startTimer();
-        }
-
-        flagsLeft += field.flag ? 1 : -1;
-        GameHelper.setFlags(flagsLeft);
-
-        field.flag = !field.flag;
-
-        const affectedFields: Field[] = [field];
-        peer.send(JSON.stringify(new ServerDataObject(ServerEventType.Game, affectedFields, flagsLeft)));
-        Renderer.drawAffectedFields(affectedFields);
-    }
+    public static handleFlag: (field: Field) => void = handleFlagDefault;
 
     public static startNewGame(): void {
         GameHelper.resetGame();
         gameStarted = false;
         revealedFields = 0;
+        GameHelper.updateConfig(GameHelper.getConfig());
+        peer.send(JSON.stringify(new ServerDataObject(ServerEventType.ConfigChange, gameConfiguration)))
         peer.send(JSON.stringify(new ServerDataObject(ServerEventType.NewGame)));
     }
 }

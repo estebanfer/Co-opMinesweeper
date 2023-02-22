@@ -46,7 +46,9 @@ peer.on("signal", (data: any): void => {
 
 peer.on("connect", (): void => {
     GameHelper.hideOverlay();
+    GameHelper.updateConfig(GameHelper.getConfig());
     signalrConnection.stop();
+    peer.send(JSON.stringify(new ServerDataObject(ServerEventType.ConfigChange, gameConfiguration)))
 });
 
 peer.on("data", (data: any): void => {
@@ -116,7 +118,7 @@ otherMouseCanvas.addEventListener("click", (e: MouseEvent): void => {
     const mousePosition: MousePosition = Helpers.getMousePosition(otherMouseCanvas, e);
     const field: Field = FieldHelper.getField(mousePosition.x, mousePosition.y);
 
-    if (field.revealed || field.flag) {
+    if (field.revealed || FieldHelper.isFlag(field.flag)) {
         return;
     }
 

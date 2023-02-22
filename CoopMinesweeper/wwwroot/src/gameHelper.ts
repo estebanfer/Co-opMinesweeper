@@ -45,7 +45,7 @@ abstract class GameHelper {
     // #endregion
 
     // #region Flags
-
+    // TODO negative flags
     public static setFlags(numberOfFlagsLeft: number): void {
         flagsLeft = numberOfFlagsLeft;
         flagsElement.innerText = flagsLeft.toString();
@@ -72,6 +72,33 @@ abstract class GameHelper {
     public static setTimer(seconds: number): void {
         elapsedTime = seconds;
         timerElement.innerText = `00${seconds}`.slice(-3);
+    }
+
+    // #endregion
+
+    // #region Config
+
+    public static getConfig(): GameConfiguration {
+        const gameConfig = new GameConfiguration()
+        if (gamemodeSelectElement.value === "1") {
+            gameConfig.gamemode = GameMode.Normal
+        } else if (gamemodeSelectElement.value === "2") {
+            gameConfig.gamemode = GameMode.NegativeBombs
+        } else {
+            gameConfig.gamemode = GameMode.Normal
+        }
+        return gameConfig
+    }
+    
+    public static updateConfig(gameConfig: GameConfiguration): void {
+        gameConfiguration = gameConfig
+        if (gameConfig.gamemode === GameMode.Normal) {
+            FieldHelper.createBombs = createBombsDefault
+            HostHelper.handleFlag = handleFlagDefault
+        } else if (gameConfig.gamemode === GameMode.NegativeBombs) {
+            FieldHelper.createBombs = createBombsNegative
+            HostHelper.handleFlag = handleFlagNegativeMode
+        }
     }
 
     // #endregion

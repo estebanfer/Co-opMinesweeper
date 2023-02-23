@@ -1,7 +1,7 @@
 // #region Game properties
 
 let matrix: Field[][] = new Array<Field[]>(16);
-let previousActiveField: Field;
+let previousActiveField: Field | undefined;
 
 let gameConfiguration: GameConfiguration = new GameConfiguration(GameMode.Normal)
 

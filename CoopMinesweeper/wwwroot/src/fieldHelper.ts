@@ -9,6 +9,10 @@ abstract class FieldHelper {
     public static bombValue(type: FieldType): number {
         return this.bombValues.get(type) || 0;
     }
+    private static flagValues: Map<FlagType, number> = new Map([[FlagType.Flag, 1], [FlagType.NegativeFlag, -1]]);
+    public static flagValue(type: FlagType): number {
+        return this.flagValues.get(type) || 0;
+    }
 
     public static initializeFields(): void {
         let y: number = 2;
@@ -99,6 +103,12 @@ abstract class FieldHelper {
         }
 
         return surroundingFields;
+    }
+
+    public static getSurroundingFieldsForChord(field: Field): Field[] {
+        return FieldHelper.getSurroundingFields(field).filter(
+            (curField) => !curField.revealed && curField.flag === FlagType.NoFlag
+        )
     }
 
     public static getSurroundingFieldsForReveal(field: Field): Field[] {

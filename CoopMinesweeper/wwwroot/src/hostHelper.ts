@@ -22,6 +22,19 @@ abstract class HostHelper {
             GameHelper.showNewGameScreen();
             affectedFields = FieldHelper.getAllBombs();
             peer.send(JSON.stringify(new ServerDataObject(ServerEventType.GameOver, affectedFields, elapsedTime)));
+        } else if (field.revealed && field.type === FieldType.Number) {
+            let surroundingFields = FieldHelper.getSurroundingFields(field);
+            let [flagValueSum, flagsCount, bombCount] = [0, 0, 0];
+            const unrevealedFields: Field[] = [];
+            for (const currentField of surroundingFields) {
+                flagValueSum += FieldHelper.flagValue(currentField.flag);
+                if (currentField.flag !== FlagType.NoFlag) { flagsCount++; }
+                if (FieldHelper.isBomb(currentField.type)) { bombCount++; }
+                if (!currentField.revealed && currentField.flag === FlagType.NoFlag) { unrevealedFields.push(currentField); }
+            }
+            if (flagValueSum === field.number && flagsCount === bombCount) {
+                unrevealedFields.forEach((currentField) => HostHelper.handleClick(currentField))
+            }
         } else {
             FieldHelper.getFieldsForReveal(field, affectedFields);
             revealedFields += affectedFields.length;

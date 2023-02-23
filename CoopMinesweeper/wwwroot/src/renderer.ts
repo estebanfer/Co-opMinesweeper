@@ -19,20 +19,35 @@ abstract class Renderer {
         gameCanvasContext.stroke();
     }
 
-    public static renderMouseMove(field: Field): void {
+    public static renderMouseMove(field: Field, surroundingFieldsChord?: Field[]): void {
         // Optimization: if the mouse moved but it is still in the same filed we don’t need to draw anything so just stop the function
         if (field === previousActiveField) {
             return;
         }
 
         if (previousActiveField) {
-            mouseCanvasContext.clearRect(previousActiveField.startX, previousActiveField.startY, 30, 30);
+            mouseCanvasContext.clearRect(previousActiveField.startX-32, previousActiveField.startY-32, 94, 94);
         }
 
         previousActiveField = field;
 
         mouseCanvasContext.fillStyle = "rgba(255, 255, 255, 0.5)";
         mouseCanvasContext.fillRect(field.startX, field.startY, 30, 30);
+        
+        surroundingFieldsChord && this.renderMouseChord(surroundingFieldsChord);
+    }
+
+    public static renderMouseChord(fields: Field[]): void {
+        for (const curField of fields) {
+            mouseCanvasContext.fillStyle = "rgba(0, 0, 0, 0.5)";
+            mouseCanvasContext.fillRect(curField.startX, curField.startY, 30, 30);
+        }
+    }
+
+    public static clearMouseChord(field: Field): void {
+        mouseCanvasContext.clearRect(field.startX-32, field.startY-32, 94, 94);
+        previousActiveField = undefined;
+        this.renderMouseMove(field)
     }
 
     // todo: Definitely move this method in some other helper for the client only

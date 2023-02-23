@@ -92,35 +92,18 @@ clientSignalrConnection.onclose((error?: Error): void => {
 
 // #region Canvas Events
 
-otherMouseCanvas.addEventListener("mousemove", (e: MouseEvent): void => {
-    const mousePosition: MousePosition = Helpers.getMousePosition(otherMouseCanvas, e);
-    clientPeer.send(JSON.stringify(new ClientDataObject(ClientEventType.Move, mousePosition)));
-
-    const field: Field = FieldHelper.getField(mousePosition.x, mousePosition.y);
-    Renderer.renderMouseMove(field);
-});
+InputHelper.setInputEventListenersCommon(clientPeer);
 
 otherMouseCanvas.addEventListener("click", (e: MouseEvent): void => {
-    const mousePosition: MousePosition = Helpers.getMousePosition(otherMouseCanvas, e);
-    const field: Field = FieldHelper.getField(mousePosition.x, mousePosition.y);
-
-    if (field.revealed || FieldHelper.isFlag(field.flag)) {
-        return;
-    }
-
-    clientPeer.send(JSON.stringify(new ClientDataObject(ClientEventType.Click, mousePosition)));
+    InputHelper.handleInputClick(e, (_, mousePos) => {
+        clientPeer.send(JSON.stringify(new ClientDataObject(ClientEventType.Click, mousePos)))
+    });
 });
 
 otherMouseCanvas.addEventListener("contextmenu", (e: MouseEvent): void => {
-    e.preventDefault();
-    const mousePosition: MousePosition = Helpers.getMousePosition(otherMouseCanvas, e);
-    const field: Field = FieldHelper.getField(mousePosition.x, mousePosition.y);
-
-    if (field.revealed) {
-        return;
-    }
-
-    clientPeer.send(JSON.stringify(new ClientDataObject(ClientEventType.Flag, mousePosition)));
+    InputHelper.handleInputRightClick(e, (_, mousePos) => {
+        clientPeer.send(JSON.stringify(new ClientDataObject(ClientEventType.Flag, mousePos)));
+    });
 });
 
 // #endregion

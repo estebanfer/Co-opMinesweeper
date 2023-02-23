@@ -106,35 +106,14 @@ signalrConnection.onclose((error?: Error): void => {
 
 // #region Canvas Events
 
-otherMouseCanvas.addEventListener("mousemove", (e: MouseEvent): void => {
-    const mousePosition: MousePosition = Helpers.getMousePosition(otherMouseCanvas, e);
-    peer.send(JSON.stringify(new ServerDataObject(ServerEventType.Move, mousePosition)));
-
-    const field: Field = FieldHelper.getField(mousePosition.x, mousePosition.y);
-    Renderer.renderMouseMove(field);
-});
+InputHelper.setInputEventListenersCommon(peer);
 
 otherMouseCanvas.addEventListener("click", (e: MouseEvent): void => {
-    const mousePosition: MousePosition = Helpers.getMousePosition(otherMouseCanvas, e);
-    const field: Field = FieldHelper.getField(mousePosition.x, mousePosition.y);
-
-    if (field.revealed || FieldHelper.isFlag(field.flag)) {
-        return;
-    }
-
-    HostHelper.handleClick(field);
+    InputHelper.handleInputClick(e, (field) => HostHelper.handleClick(field));
 });
 
 otherMouseCanvas.addEventListener("contextmenu", (e: MouseEvent): void => {
-    e.preventDefault();
-    const mousePosition: MousePosition = Helpers.getMousePosition(otherMouseCanvas, e);
-    const field: Field = FieldHelper.getField(mousePosition.x, mousePosition.y);
-
-    if (field.revealed) {
-        return;
-    }
-
-    HostHelper.handleFlag(field);
+    InputHelper.handleInputRightClick(e, (field) => HostHelper.handleFlag(field));
 });
 
 // #endregion

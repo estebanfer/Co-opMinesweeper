@@ -13,7 +13,7 @@ abstract class InputHelper {
         peer.send(JSON.stringify(new ServerDataObject(ServerEventType.Move, mousePosition)));
 
         const field: Field = FieldHelper.getField(mousePosition.x, mousePosition.y);
-        const surroundingFields: Field[] | undefined = (e.buttons & 1)
+        const surroundingFields: Field[] | undefined = ((e.buttons & 1) && field.revealed)
             ? FieldHelper.getSurroundingFieldsForChord(field)
             : undefined;
         Renderer.renderMouseMove(field, surroundingFields);

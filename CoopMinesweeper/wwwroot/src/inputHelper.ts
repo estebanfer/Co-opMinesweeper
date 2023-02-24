@@ -1,16 +1,13 @@
 abstract class InputHelper {
-    public static setInputEventListenersCommon(peer: SimplePeer) {
-        otherMouseCanvas.addEventListener("mousemove", (e: MouseEvent): void => {
-            InputHelper.handleInputMouseMove(e, peer)
-        });
+    public static setInputEventListenersCommon() {
         otherMouseCanvas.addEventListener("mousedown", InputHelper.mouseDownFunc);
         otherMouseCanvas.addEventListener("mouseup", InputHelper.mouseUpFunc);
         
     }
 
-    public static handleInputMouseMove(e: MouseEvent, peer: SimplePeer) {
+    public static handleInputMouseMove(e: MouseEvent, callback: (mousePos: MousePosition) => void) {
         const mousePosition: MousePosition = Helpers.getMousePosition(otherMouseCanvas, e);
-        peer.send(JSON.stringify(new ServerDataObject(ServerEventType.Move, mousePosition)));
+        callback(mousePosition);
 
         const field: Field = FieldHelper.getField(mousePosition.x, mousePosition.y);
         const surroundingFields: Field[] | undefined = ((e.buttons & 1) && field.revealed)

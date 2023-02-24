@@ -91,7 +91,11 @@ clientSignalrConnection.onclose((error?: Error): void => {
 
 // #region Canvas Events
 
-InputHelper.setInputEventListenersCommon(clientPeer);
+InputHelper.setInputEventListenersCommon();
+
+otherMouseCanvas.addEventListener("mousemove", (e: MouseEvent): void => {
+    InputHelper.handleInputMouseMove(e, (mousePos) => clientPeer.send(JSON.stringify(new ClientDataObject(ClientEventType.Move, mousePos))));
+});
 
 otherMouseCanvas.addEventListener("click", (e: MouseEvent): void => {
     InputHelper.handleInputClick(e, (_, mousePos) => {

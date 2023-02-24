@@ -17,6 +17,7 @@ abstract class HostHelper {
         // }
 
         let affectedFields: Field[] = [];
+        let gameOver = false;
         if (field.revealed && field.type === FieldType.Number) {
             let surroundingFields = FieldHelper.getSurroundingFields(field);
             let [flagValueSum, flagsCount, bombCount] = [0, 0, 0];
@@ -30,38 +31,36 @@ abstract class HostHelper {
             if (flagValueSum === field.number && flagsCount === bombCount) {
                 for (const currentField of unrevealedFields) {
                     if (currentField.revealed) continue //if a field becomes revealed, ignore it
-                    const end = this.handleClickUnrevealed(currentField, affectedFields);
-                    if (end) return;
+                    gameOver = this.handleClickUnrevealed(currentField, affectedFields);
+                    if (gameOver) break;
                 }
-            } else {
-                return
             }
         } else {
-            const end = this.handleClickUnrevealed(field, affectedFields);
-            if (end) return;
+            gameOver = this.handleClickUnrevealed(field, affectedFields);
         }
-        peer.send(JSON.stringify(new ServerDataObject(ServerEventType.Game, affectedFields)));
-        revealedFields += affectedFields.length;
-        if (revealedFields === (30*16) - (gameConfiguration.mineAmount + gameConfiguration.negativeMineAmount)) {
-            GameHelper.stopTimer();
-            GameHelper.showNewGameScreen();
-            peer.send(JSON.stringify(new ServerDataObject(ServerEventType.GameWon, affectedFields, elapsedTime)));
-        }
-
-        Renderer.drawAffectedFields(affectedFields);
-    }
-    private static handleClickUnrevealed(field: Field, affectedFields: Field[] = []): boolean {
-        if (FieldHelper.isBomb(field.type)) {
+        if (gameOver) {
             GameHelper.stopTimer();
             GameHelper.showNewGameScreen();
             affectedFields = FieldHelper.getAllBombs();
             peer.send(JSON.stringify(new ServerDataObject(ServerEventType.GameOver, affectedFields, elapsedTime)));
-
-            Renderer.drawAffectedFields(affectedFields);
-            return true
         } else {
-            FieldHelper.getFieldsForReveal(field, affectedFields);
+            if (affectedFields.length === 0) return; 
+            revealedFields += affectedFields.length;
+            if (revealedFields === (30*16) - (gameConfiguration.mineAmount + gameConfiguration.negativeMineAmount)) {
+                GameHelper.stopTimer();
+                GameHelper.showNewGameScreen();
+                peer.send(JSON.stringify(new ServerDataObject(ServerEventType.GameWon, affectedFields, elapsedTime)));
+            } else {
+                peer.send(JSON.stringify(new ServerDataObject(ServerEventType.Game, affectedFields)));
+            }
         }
+        Renderer.drawAffectedFields(affectedFields);
+    }
+    private static handleClickUnrevealed(field: Field, affectedFields: Field[] = []): boolean {
+        if (FieldHelper.isBomb(field.type)) {
+            return true
+        }
+        FieldHelper.getFieldsForReveal(field, affectedFields);
         return false
     }
 

@@ -33,8 +33,17 @@
                     <button onclick="window.location.href = '/index.html'" class="button back-button">Back</button>
                 </div><div id="middle-column">
                     <div id="header" class="unselectable">
-                        <div id="flags-container">
-                            <span id="flags">99</span>
+                        <div id="all-flags-container">
+                            <div style="display: flex; align-items: center;">
+                                <div class="flag-container">
+                                    <img src="flag.png">
+                                    <span id="flags">99</span>
+                                </div>
+                                <div class="flag-container hidden" id="negative-flags-container">
+                                    <img src="negativeFlag.png">
+                                    <span id="negative-flags">0</span>
+                                </div>
+                            </div>
                         </div>
                         <div id="timer-container">
                             <span id="timer">000</span>

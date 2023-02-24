@@ -1,5 +1,4 @@
 abstract class ClientHelper {
-    //TODO Negative flags
     public static handleGame(affectedFields: Field[], flagsLeft?: number, negativeFlagsLeft?: number): void {
         for (let i: number = 0, len: number = affectedFields.length; i < len; i++) {
             const field: Field = affectedFields[i];
@@ -8,8 +7,11 @@ abstract class ClientHelper {
 
         Renderer.drawAffectedFields(affectedFields);
 
-        if (flagsLeft) {
+        if (flagsLeft !== undefined) {
             GameHelper.setFlags(flagsLeft);
+        }
+        if (negativeFlagsLeft !== undefined) {
+            GameHelper.setNegativeFlags(negativeFlagsLeft);
         }
 
         if (!timerIntervalId) {

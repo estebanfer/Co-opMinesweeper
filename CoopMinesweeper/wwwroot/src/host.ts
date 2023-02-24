@@ -46,9 +46,8 @@ peer.on("signal", (data: any): void => {
 
 peer.on("connect", (): void => {
     GameHelper.hideOverlay();
-    GameHelper.updateConfig(GameHelper.getConfig());
     signalrConnection.stop();
-    peer.send(JSON.stringify(new ServerDataObject(ServerEventType.ConfigChange, gameConfiguration)))
+    HostHelper.startNewGame();
 });
 
 peer.on("data", (data: any): void => {
@@ -140,5 +139,20 @@ testLatencyButton.addEventListener("click", (): void => {
         peer.send(JSON.stringify(new ServerDataObject(ServerEventType.LatencyTest, i)));
     }
 });
+
+gamemodeSelectElement.addEventListener("change", (e) => {
+    if (gamemodeSelectElement.value === "2") {
+        negativeBombAmountElement.disabled = false
+        const bombAmount = parseInt(bombAmountElement.value) || 99;
+        const negativeBombAmount = bombAmount * 0.3;
+        negativeBombAmountElement.value = negativeBombAmount.toFixed();
+        bombAmountElement.value = (bombAmount - negativeBombAmount).toFixed();
+    } else {
+        negativeBombAmountElement.disabled = true
+        const bombAmount = parseInt(bombAmountElement.value) || 99;
+        const negativeBombAmount = parseInt(negativeBombAmountElement.value) || 20;
+        bombAmountElement.value = (bombAmount + negativeBombAmount).toFixed();
+    }
+})
 
 // #endregion

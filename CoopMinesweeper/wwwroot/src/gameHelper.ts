@@ -1,11 +1,19 @@
 abstract class GameHelper {
+    public static isHost(): boolean {
+        return !gameIdInput;
+    }
     // #region Game
 
     public static resetGame(): void {
         Renderer.drawBackground();
         FieldHelper.resetFields();
         GameHelper.setTimer(0);
-        GameHelper.setFlags(99);
+        if (gameConfiguration.gamemode === GameMode.Normal) {
+            GameHelper.setFlags(gameConfiguration.mineAmount);
+        } else if (gameConfiguration.gamemode === GameMode.NegativeBombs) {
+            GameHelper.setFlags(gameConfiguration.mineAmount);
+            GameHelper.setNegativeFlags(gameConfiguration.negativeMineAmount);
+        }
         GameHelper.hideOverlay();
     }
 
@@ -18,12 +26,10 @@ abstract class GameHelper {
         overlayStatus.style.display = "none";
         newGameButton.style.display = "none";
 
-        if (gameIdText) { // Host
+        if (this.isHost()) { // Host
             gameIdText.style.display = "none";
             copyToClipboardButton.style.display = "none";
-        }
-
-        if (gameIdInput) { // Client
+        } else { // Client
             gameIdInput.style.display = "none";
             connectButton.style.display = "none";
         }
@@ -45,10 +51,18 @@ abstract class GameHelper {
     // #endregion
 
     // #region Flags
-    // TODO negative flags
     public static setFlags(numberOfFlagsLeft: number): void {
         flagsLeft = numberOfFlagsLeft;
         flagsElement.innerText = flagsLeft.toString();
+    }
+    public static setNegativeFlags(numberOfNegativeFlagsLeft: number): void {
+        negativeFlagsLeft = numberOfNegativeFlagsLeft;
+        negativeFlagsElement.innerText = negativeFlagsLeft.toString();
+    }
+    public static setNegativeFlagsVisibility(visible: boolean):void {
+        visible
+        ? negativeFlagsContainerElement.classList.remove("hidden")
+        : negativeFlagsContainerElement.classList.add("hidden");
     }
 
     // #endregion
@@ -80,8 +94,11 @@ abstract class GameHelper {
 
     public static getConfig(): GameConfiguration {
         const gameConfig = new GameConfiguration()
+        gameConfig.mineAmount = parseInt(bombAmountElement.value) || 99;
+        gameConfig.negativeMineAmount = parseInt(negativeBombAmountElement.value) || 29;
         if (gamemodeSelectElement.value === "1") {
             gameConfig.gamemode = GameMode.Normal
+            gameConfig.negativeMineAmount = 0;
         } else if (gamemodeSelectElement.value === "2") {
             gameConfig.gamemode = GameMode.NegativeBombs
         } else {
@@ -93,11 +110,14 @@ abstract class GameHelper {
     public static updateConfig(gameConfig: GameConfiguration): void {
         gameConfiguration = gameConfig
         if (gameConfig.gamemode === GameMode.Normal) {
-            FieldHelper.createBombs = createBombsDefault
-            HostHelper.handleFlag = handleFlagDefault
-        } else if (gameConfig.gamemode === GameMode.NegativeBombs) {
-            FieldHelper.createBombs = createBombsNegative
-            HostHelper.handleFlag = handleFlagNegativeMode
+            gameConfig.negativeMineAmount = 0;
+            FieldHelper.createBombs = createBombsDefault;
+            if (this.isHost()) HostHelper.handleFlag = handleFlagDefault;
+            this.setNegativeFlagsVisibility(false);
+        } else {
+            FieldHelper.createBombs = createBombsNegative;
+            if (this.isHost()) HostHelper.handleFlag = handleFlagNegativeMode;
+            this.setNegativeFlagsVisibility(true);
         }
     }
 

@@ -3,7 +3,7 @@
 let matrix: Field[][] = new Array<Field[]>(16);
 let previousActiveField: Field | undefined;
 
-let gameConfiguration: GameConfiguration = new GameConfiguration(GameMode.Normal)
+let gameConfiguration: GameConfiguration = new GameConfiguration()
 
 let flagsLeft: number = 99;
 let negativeFlagsLeft: number = 0;
@@ -63,12 +63,16 @@ const endGameButton: HTMLButtonElement = document.getElementById("end-game-butto
 const testLatencyButton: HTMLButtonElement = document.getElementById("test-latency-button") as HTMLButtonElement;
 
 let flagsElement: HTMLElement = document.getElementById("flags") as HTMLElement;
+let negativeFlagsElement: HTMLElement = document.getElementById("negative-flags") as HTMLElement;
+let negativeFlagsContainerElement: HTMLElement = document.getElementById("negative-flags-container") as HTMLElement;
 let timerElement: HTMLElement = document.getElementById("timer") as HTMLElement;
 
 // Host only
 const gameIdText: HTMLElement = document.getElementById("game-id-text") as HTMLElement;
 const copyToClipboardButton: HTMLButtonElement = document.getElementById("copy-to-clipboard-button") as HTMLButtonElement;
 const gamemodeSelectElement: HTMLSelectElement = document.getElementById("setting-gamemode") as HTMLSelectElement;
+const bombAmountElement: HTMLInputElement = document.getElementById("bomb-count") as HTMLInputElement;
+const negativeBombAmountElement: HTMLInputElement = document.getElementById("negative-bomb-count") as HTMLInputElement;
 
 // Client only
 const gameIdInput: HTMLInputElement = document.getElementById("game-id-input") as HTMLInputElement;

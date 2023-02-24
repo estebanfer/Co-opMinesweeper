@@ -47,6 +47,7 @@ function handleFlagNegativeMode(field: Field): void {
             break;
     }
     GameHelper.setFlags(flagsLeft);
+    GameHelper.setNegativeFlags(negativeFlagsLeft);
 
     const affectedFields: Field[] = [field];
     peer.send(JSON.stringify(new ServerDataObject(ServerEventType.Game, affectedFields, flagsLeft, negativeFlagsLeft)));

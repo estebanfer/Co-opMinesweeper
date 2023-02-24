@@ -31,7 +31,6 @@ clientPeer.on("signal", (data: any): void => {
 });
 
 clientPeer.on("connect", (): void => {
-    GameHelper.hideOverlay();
     clientSignalrConnection.stop();
 });
 
@@ -39,8 +38,6 @@ clientPeer.on("data", (data: any): void => {
     const serverDataObject: ServerDataObject = JSON.parse(data);
     if (serverDataObject.serverEventType === ServerEventType.LatencyTest) {
         clientPeer.send(JSON.stringify(new ClientDataObject(ClientEventType.LatencyResponse, serverDataObject.stamp)));
-    } else if (serverDataObject.serverEventType === ServerEventType.ConfigChange) {
-        GameHelper.updateConfig(serverDataObject.config)
     } else if (serverDataObject.serverEventType === ServerEventType.LatencyResponse) {
         Helpers.processLatency(serverDataObject.stamp);
     } else if (serverDataObject.serverEventType === ServerEventType.Move) {
@@ -52,6 +49,8 @@ clientPeer.on("data", (data: any): void => {
     } else if (serverDataObject.serverEventType === ServerEventType.GameOver) {
         ClientHelper.handleGameOver(serverDataObject.affectedFields, serverDataObject.elapsedTime!);
     } else if (serverDataObject.serverEventType === ServerEventType.NewGame) {
+        GameHelper.hideOverlay();
+        GameHelper.updateConfig(serverDataObject.config);
         GameHelper.resetGame();
     }
 });

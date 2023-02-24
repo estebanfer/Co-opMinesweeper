@@ -4,7 +4,7 @@ function createBombsDefault(): void {
     let row: number;
     let column: number;
 
-    while (numberOfBombs < 99) {
+    while (numberOfBombs < gameConfiguration.mineAmount) {
         row = Helpers.getRandomInt(0, 15);
         column = Helpers.getRandomInt(0, 29);
         const field: Field = matrix[row][column];
@@ -23,7 +23,7 @@ function createBombsNegative(): void {
     let row: number;
     let column: number;
 
-    while (numberOfBombs < 99) {
+    while (numberOfBombs < gameConfiguration.mineAmount) {
         row = Helpers.getRandomInt(0, 15);
         column = Helpers.getRandomInt(0, 29);
         const field: Field = matrix[row][column];
@@ -32,7 +32,20 @@ function createBombsNegative(): void {
             continue;
         }
 
-        matrix[row][column].type = numberOfBombs < 70 ? FieldType.Bomb : FieldType.NegativeBomb;
+        field.type = FieldType.Bomb;
+        numberOfBombs++;
+    }
+    numberOfBombs = 0;
+    while (numberOfBombs < gameConfiguration.negativeMineAmount) {
+        row = Helpers.getRandomInt(0, 15);
+        column = Helpers.getRandomInt(0, 29);
+        const field: Field = matrix[row][column];
+
+        if (FieldHelper.isBomb(field.type) || field.type === FieldType.NoBomb) {
+            continue;
+        }
+
+        field.type = FieldType.NegativeBomb;
         numberOfBombs++;
     }
 }

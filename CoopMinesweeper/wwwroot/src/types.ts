@@ -85,9 +85,13 @@ enum ClientEventType {
 }
 
 class GameConfiguration {
-    public gamemode!: GameMode | undefined;
-    constructor(gamemode?: GameMode) {
+    public gamemode: GameMode;
+    public mineAmount: number;
+    public negativeMineAmount: number;
+    constructor(gamemode: GameMode = GameMode.Normal, mineAmount: number = 99, negativeMineAmount: number = 29) {
         this.gamemode = gamemode;
+        this.mineAmount = mineAmount;
+        this.negativeMineAmount = negativeMineAmount;
     }
 }
 
@@ -103,7 +107,7 @@ class ServerDataObject {
 
     constructor(serverEventType: ServerEventType.NewGame);
     constructor(serverEventType: ServerEventType.Move, mousePosition: MousePosition);
-    constructor(serverEventType: ServerEventType.ConfigChange, config: GameConfiguration);
+    constructor(serverEventType: ServerEventType.NewGame, config: GameConfiguration);
     constructor(serverEventType: ServerEventType.LatencyTest | ServerEventType.LatencyResponse, stamp: number);
     constructor(serverEventType: ServerEventType.Game, affectedFields: Field[], flagsLeft?: number, negativeFlagsLeft?: number);
     constructor(serverEventType: ServerEventType.GameWon, affectedFields: Field[], elapsedTime: number);
@@ -139,5 +143,4 @@ enum ServerEventType {
     NewGame,
     LatencyTest,
     LatencyResponse,
-    ConfigChange
 }

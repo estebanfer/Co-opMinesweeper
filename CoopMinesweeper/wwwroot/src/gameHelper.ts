@@ -104,6 +104,8 @@ abstract class GameHelper {
         } else {
             gameConfig.gamemode = GameMode.Normal
         }
+        gameConfig.height = parseInt(heightSettingElement.value) || 16;
+        gameConfig.width = parseInt(widthSettingElement.value) || 30;
         return gameConfig
     }
     
@@ -119,6 +121,39 @@ abstract class GameHelper {
             if (this.isHost()) HostHelper.handleFlag = handleFlagNegativeMode;
             this.setNegativeFlagsVisibility(true);
         }
+        if (gameConfiguration.height === matrix.length && gameConfiguration.width === matrix[0].length) {
+            return;
+        }
+        fieldSize = 32;
+        while (gameConfig.width * fieldSize > 960) {
+            fieldSize = fieldSize - 8
+        }
+        this.updateBoardSize(
+            (gameConfiguration.width*fieldSize)+2,
+            (gameConfiguration.height*fieldSize)+2
+        )
+        FieldHelper.initializeFields(gameConfiguration.width, gameConfiguration.height);
+    }
+
+    public static updateBoardSize(width: number, height: number): void {
+        const [sWidth, sHeight] = [width.toFixed()+"px", height.toFixed()+"px"]
+        canvasHolder.style.width = sWidth;
+        canvasHolder.style.height = sHeight;
+        
+        gameCanvas.style.width = sWidth;
+        gameCanvas.style.height = sHeight;
+        gameCanvas.width = gameCanvas.offsetWidth;
+        gameCanvas.height = gameCanvas.offsetHeight;
+
+        mouseCanvas.style.width = sWidth;
+        mouseCanvas.style.height = sHeight;
+        mouseCanvas.width = mouseCanvas.offsetWidth;
+        mouseCanvas.height = mouseCanvas.offsetHeight;
+
+        otherMouseCanvas.style.width = sWidth;
+        otherMouseCanvas.style.height = sHeight;
+        otherMouseCanvas.width = otherMouseCanvas.offsetWidth;
+        otherMouseCanvas.height = otherMouseCanvas.offsetHeight;
     }
 
     // #endregion

@@ -88,10 +88,14 @@ class GameConfiguration {
     public gamemode: GameMode;
     public mineAmount: number;
     public negativeMineAmount: number;
-    constructor(gamemode: GameMode = GameMode.Normal, mineAmount: number = 99, negativeMineAmount: number = 29) {
+    public width: number;
+    public height: number;
+    constructor(gamemode = GameMode.Normal, mineAmount = 99, negativeMineAmount = 29, width = 30, height = 16) {
         this.gamemode = gamemode;
         this.mineAmount = mineAmount;
         this.negativeMineAmount = negativeMineAmount;
+        this.width = width;
+        this.height = height;
     }
 }
 

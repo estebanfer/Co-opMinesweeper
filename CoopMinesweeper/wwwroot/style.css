@@ -150,6 +150,7 @@ body {
 
 #canvas-holder {
     height: 514px;
+    width: 962px;
     position: relative;
     background-color: rgb(59, 155, 102);
 }
@@ -162,6 +163,12 @@ body {
 /* #endregion Container */
 
 /* #region Canvas */
+
+#canvas-center {
+    display: flex;
+    justify-content: center;
+    width: 962px;
+}
 
 #game-canvas, #mouse-canvas, #other-mouse-canvas {
     width: 962px;

@@ -144,19 +144,68 @@ testLatencyButton.addEventListener("click", (): void => {
     }
 });
 
-gamemodeSelectElement.addEventListener("change", (e) => {
-    if (gamemodeSelectElement.value === "2") {
-        negativeBombAmountElement.disabled = false
-        const bombAmount = parseInt(bombAmountElement.value) || 99;
-        const negativeBombAmount = bombAmount * 0.3;
-        negativeBombAmountElement.value = negativeBombAmount.toFixed();
-        bombAmountElement.value = (bombAmount - negativeBombAmount).toFixed();
-    } else {
-        negativeBombAmountElement.disabled = true
-        const bombAmount = parseInt(bombAmountElement.value) || 99;
-        const negativeBombAmount = parseInt(negativeBombAmountElement.value) || 20;
-        bombAmountElement.value = (bombAmount + negativeBombAmount).toFixed();
+{
+    const gamemodeChange = () => {
+        if (gamemodeSelectElement.value === "2") {
+            negativeBombAmountElement.disabled = false
+            const bombAmount = parseInt(bombAmountElement.value) || 99;
+            const negativeBombAmount = bombAmount * 0.3;
+            negativeBombAmountElement.value = negativeBombAmount.toFixed();
+            bombAmountElement.value = (bombAmount - negativeBombAmount).toFixed();
+        } else {
+            negativeBombAmountElement.disabled = true
+            const bombAmount = parseInt(bombAmountElement.value) || 99;
+            const negativeBombAmount = negativeBombAmountElement.value !== "0"
+                ? parseInt(negativeBombAmountElement.value) || 20
+                : 0;
+            bombAmountElement.value = (bombAmount + negativeBombAmount).toFixed();
+            negativeBombAmountElement.value = "0";
+        }
     }
-})
+    gamemodeSelectElement.addEventListener("change", gamemodeChange);
+    
+    gameDifficultySelectElement.addEventListener("change", (e) => {
+        if (gameDifficultySelectElement.value === "1") {
+            bombAmountElement.value = "10";
+            widthSettingElement.value = "9";
+            heightSettingElement.value = "9";
+        } else if (gameDifficultySelectElement.value === "2") {
+            bombAmountElement.value = "40";
+            widthSettingElement.value = "16";
+            heightSettingElement.value = "16";
+        } else if (gameDifficultySelectElement.value === "3") {
+            bombAmountElement.value = "99";
+            widthSettingElement.value = "30";
+            heightSettingElement.value = "16";
+        }
+        if (gameDifficultySelectElement.value === "4") {
+            advancedSettingsElement.classList.remove("hidden");
+        } else {
+            gamemodeChange() //update negative mines amount if on that mode
+            advancedSettingsElement.classList.add("hidden");
+        }
+    })
+}
+
+{
+    const onBoardSettingsChange = () => {
+        const bombAmount = parseInt(bombAmountElement.value) || 99;
+        const negativeBombAmount = negativeBombAmountElement.value !== "0"
+            ? parseInt(negativeBombAmountElement.value) || 20
+            : 0;
+        let height = parseInt(heightSettingElement.value) || 16;
+        let width = parseInt(widthSettingElement.value) || 30;
+        const possibleBombAmount = (width*height) - 9;
+        console.log(possibleBombAmount, bombAmount, negativeBombAmount);
+        if (possibleBombAmount < bombAmount + negativeBombAmount) {
+            bombAmountElement.value = possibleBombAmount.toFixed();
+            negativeBombAmountElement.value = "0";
+        }
+    };
+    widthSettingElement.addEventListener("change", onBoardSettingsChange);
+    heightSettingElement.addEventListener("change", onBoardSettingsChange);
+    bombAmountElement.addEventListener("input", onBoardSettingsChange);
+    negativeBombAmountElement.addEventListener("input", onBoardSettingsChange);
+}
 
 // #endregion

@@ -46,7 +46,7 @@ abstract class HostHelper {
         } else {
             if (affectedFields.length === 0) return; 
             revealedFields += affectedFields.length;
-            if (revealedFields === (30*16) - (gameConfiguration.mineAmount + gameConfiguration.negativeMineAmount)) {
+            if (revealedFields === (gameConfiguration.width*gameConfiguration.height) - (gameConfiguration.mineAmount + gameConfiguration.negativeMineAmount)) {
                 GameHelper.stopTimer();
                 GameHelper.showNewGameScreen();
                 peer.send(JSON.stringify(new ServerDataObject(ServerEventType.GameWon, affectedFields, elapsedTime)));

@@ -3,7 +3,8 @@
 let matrix: Field[][] = new Array<Field[]>(16);
 let previousActiveField: Field | undefined;
 
-let gameConfiguration: GameConfiguration = new GameConfiguration()
+let gameConfiguration: GameConfiguration = new GameConfiguration();
+let fieldSize: number = 32;
 
 let flagsLeft: number = 99;
 let negativeFlagsLeft: number = 0;
@@ -23,6 +24,8 @@ let revealedFields: number = 0;
 // #endregion Game properties
 
 // #region Html globals
+
+let canvasHolder: HTMLElement = document.getElementById("canvas-holder") as HTMLElement;
 
 let gameCanvas: HTMLCanvasElement = document.getElementById("game-canvas") as HTMLCanvasElement;
 let gameCanvasContext: CanvasRenderingContext2D = gameCanvas.getContext("2d") as CanvasRenderingContext2D;
@@ -71,8 +74,12 @@ let timerElement: HTMLElement = document.getElementById("timer") as HTMLElement;
 const gameIdText: HTMLElement = document.getElementById("game-id-text") as HTMLElement;
 const copyToClipboardButton: HTMLButtonElement = document.getElementById("copy-to-clipboard-button") as HTMLButtonElement;
 const gamemodeSelectElement: HTMLSelectElement = document.getElementById("setting-gamemode") as HTMLSelectElement;
+const gameDifficultySelectElement: HTMLInputElement = document.getElementById("setting-difficulty") as HTMLInputElement;
+const advancedSettingsElement: HTMLElement = document.getElementById("advanced-settings") as HTMLElement;
 const bombAmountElement: HTMLInputElement = document.getElementById("bomb-count") as HTMLInputElement;
 const negativeBombAmountElement: HTMLInputElement = document.getElementById("negative-bomb-count") as HTMLInputElement;
+const widthSettingElement: HTMLInputElement = document.getElementById("setting-width") as HTMLInputElement;
+const heightSettingElement: HTMLInputElement = document.getElementById("setting-height") as HTMLInputElement;
 
 // Client only
 const gameIdInput: HTMLInputElement = document.getElementById("game-id-input") as HTMLInputElement;

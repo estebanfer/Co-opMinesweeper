@@ -14,17 +14,18 @@ abstract class FieldHelper {
         return this.flagValues.get(type) || 0;
     }
 
-    public static initializeFields(): void {
+    public static initializeFields(width: number = gameConfiguration.width, height: number = gameConfiguration.height): void {
+       matrix = new Array<Field[]>(height);
         let y: number = 2;
-        for (let row: number = 0; row < 16; row++) {
-            matrix[row] = new Array<Field>(30);
+        for (let row: number = 0; row < height; row++) {
+            matrix[row] = new Array<Field>(width);
             let x: number = 2;
-            for (let column: number = 0; column < 30; column++) {
+            for (let column: number = 0; column < width; column++) {
                 matrix[row][column] = new Field(x, y, row, column);
-                x += 32;
+                x += fieldSize;
             }
 
-            y += 32;
+            y += fieldSize;
         }
     }
 
@@ -32,20 +33,20 @@ abstract class FieldHelper {
         let row: number;
         let column: number;
 
-        if (y < 33) {
+        if (y < fieldSize+1) {
             row = 0;
-        } else if (y > 480) {
-            row = 15;
+        } else if (y > fieldSize*(gameConfiguration.height-1)) {
+            row = (gameConfiguration.height-1);
         } else {
-            row = Math.floor((y - 1) / 32);
+            row = Math.floor((y - 1) / fieldSize);
         }
 
-        if (x < 33) {
+        if (x < fieldSize+1) {
             column = 0;
-        } else if (x > 928) {
-            column = 29;
+        } else if (x > fieldSize*(gameConfiguration.width-1)) {
+            column = (gameConfiguration.width-1);
         } else {
-            column = Math.floor((x - 1) / 32);
+            column = Math.floor((x - 1) / fieldSize);
         }
 
         return matrix[row][column];
@@ -174,8 +175,8 @@ abstract class FieldHelper {
 
     public static resetFields(): void {
         let field: Field;
-        for (let row: number = 0; row < 16; row++) {
-            for (let column: number = 0; column < 30; column++) {
+        for (let row: number = 0; row < gameConfiguration.height; row++) {
+            for (let column: number = 0; column < gameConfiguration.width; column++) {
                 field = matrix[row][column];
 
                 field.number = 0;
@@ -202,8 +203,8 @@ abstract class FieldHelper {
         let bombs: number;
         let surroundingFields: Field[];
 
-        for (let row: number = 0; row < 16; row++) {
-            for (let column: number = 0; column < 30; column++) {
+        for (let row: number = 0; row < gameConfiguration.height; row++) {
+            for (let column: number = 0; column < gameConfiguration.width; column++) {
                 field = matrix[row][column];
 
                 if (FieldHelper.isBomb(field.type)) {
@@ -232,8 +233,8 @@ abstract class FieldHelper {
         let field: Field;
         const fields: Field[] = [];
 
-        for (let row: number = 0; row < 16; row++) {
-            for (let column: number = 0; column < 30; column++) {
+        for (let row: number = 0; row < gameConfiguration.height; row++) {
+            for (let column: number = 0; column < gameConfiguration.width; column++) {
                 field = matrix[row][column];
 
                 if (FieldHelper.isBomb(field.type)) {

@@ -1,6 +1,6 @@
 abstract class FieldHelper {
 
-    public static createBombs: () => void = createBombsDefault;
+    public static createBombs: () => void;
     public static isFlag(type: FlagType): boolean {
         return type === FlagType.Flag || type === FlagType.NegativeFlag;
     }
@@ -244,6 +244,59 @@ abstract class FieldHelper {
 
         return fields;
     }
+    // todo: Optimize this
+    public static createBombsDefault(): void {
+        let numberOfBombs: number = 0;
+        let row: number;
+        let column: number;
+
+        while (numberOfBombs < gameConfiguration.mineAmount) {
+            row = Helpers.getRandomInt(0, gameConfiguration.height - 1);
+            column = Helpers.getRandomInt(0, gameConfiguration.width - 1);
+            const field: Field = matrix[row][column];
+
+            if (field.type === FieldType.Bomb || field.type === FieldType.NoBomb) {
+                continue;
+            }
+
+            matrix[row][column].type = FieldType.Bomb;
+            numberOfBombs++;
+        }
+    }
+
+    public static createBombsNegative(): void {
+        let numberOfBombs: number = 0;
+        let row: number;
+        let column: number;
+
+        while (numberOfBombs < gameConfiguration.mineAmount) {
+            row = Helpers.getRandomInt(0, gameConfiguration.height - 1);
+            column = Helpers.getRandomInt(0, gameConfiguration.width - 1);
+            const field: Field = matrix[row][column];
+
+            if (FieldHelper.isBomb(field.type) || field.type === FieldType.NoBomb) {
+                continue;
+            }
+
+            field.type = FieldType.Bomb;
+            numberOfBombs++;
+        }
+        numberOfBombs = 0;
+        while (numberOfBombs < gameConfiguration.negativeMineAmount) {
+            row = Helpers.getRandomInt(0, gameConfiguration.height - 1);
+            column = Helpers.getRandomInt(0, gameConfiguration.width - 1);
+            const field: Field = matrix[row][column];
+
+            if (FieldHelper.isBomb(field.type) || field.type === FieldType.NoBomb) {
+                continue;
+            }
+
+            field.type = FieldType.NegativeBomb;
+            numberOfBombs++;
+        }
+    }
+
     private static bombValues: Map<FieldType, number> = new Map([[FieldType.Bomb, 1], [FieldType.NegativeBomb, -1]]);
     private static flagValues: Map<FlagType, number> = new Map([[FlagType.Flag, 1], [FlagType.NegativeFlag, -1]]);
 }
+FieldHelper.createBombs = FieldHelper.createBombsDefault;

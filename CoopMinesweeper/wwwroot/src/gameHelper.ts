@@ -113,12 +113,16 @@ abstract class GameHelper {
         gameConfiguration = gameConfig;
         if (gameConfig.gamemode === GameMode.Normal) {
             gameConfig.negativeMineAmount = 0;
-            FieldHelper.createBombs = createBombsDefault;
-            if (this.isHost()) { HostHelper.handleFlag = handleFlagDefault; }
+            if (this.isHost()) {
+                FieldHelper.createBombs = FieldHelper.createBombsDefault;
+                HostHelper.handleFlag = HostHelper.handleFlagDefault;
+            }
             this.setNegativeFlagsVisibility(false);
         } else {
-            FieldHelper.createBombs = createBombsNegative;
-            if (this.isHost()) { HostHelper.handleFlag = handleFlagNegativeMode; }
+            if (this.isHost()) {
+                FieldHelper.createBombs = FieldHelper.createBombsNegative;
+                HostHelper.handleFlag = HostHelper.handleFlagNegativeMode;
+            }
             this.setNegativeFlagsVisibility(true);
         }
         if (gameConfiguration.height === matrix.length && gameConfiguration.width === matrix[0].length) {

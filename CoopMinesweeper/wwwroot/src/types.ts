@@ -90,7 +90,13 @@ class GameConfiguration {
     public negativeMineAmount: number;
     public width: number;
     public height: number;
-    constructor(gamemode = GameMode.Normal, mineAmount = 99, negativeMineAmount = 29, width = 30, height = 16) {
+    constructor(
+        gamemode: GameMode = GameMode.Normal,
+        mineAmount: number = 99,
+        negativeMineAmount: number = 29,
+        width: number = 30,
+        height: number = 16
+    ) {
         this.gamemode = gamemode;
         this.mineAmount = mineAmount;
         this.negativeMineAmount = negativeMineAmount;
@@ -146,5 +152,5 @@ enum ServerEventType {
     GameOver,
     NewGame,
     LatencyTest,
-    LatencyResponse,
+    LatencyResponse
 }

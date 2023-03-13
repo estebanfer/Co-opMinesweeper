@@ -1,4 +1,6 @@
 abstract class HostHelper {
+
+    public static handleFlag: (field: Field) => void = handleFlagDefault;
     public static handleClick(field: Field): void {
         if (!gameStarted) {
             gameStarted = true;
@@ -19,7 +21,7 @@ abstract class HostHelper {
         let affectedFields: Field[] = [];
         let gameOver = false;
         if (field.revealed && field.type === FieldType.Number) {
-            let surroundingFields = FieldHelper.getSurroundingFields(field);
+            const surroundingFields = FieldHelper.getSurroundingFields(field);
             let [flagValueSum, flagsCount, bombCount] = [0, 0, 0];
             const unrevealedFields: Field[] = [];
             for (const currentField of surroundingFields) {
@@ -30,9 +32,9 @@ abstract class HostHelper {
             }
             if (flagValueSum === field.number && flagsCount === bombCount) {
                 for (const currentField of unrevealedFields) {
-                    if (currentField.revealed) continue //if a field becomes revealed, ignore it
+                    if (currentField.revealed) { continue; } // if a field becomes revealed, ignore it
                     gameOver = this.handleClickUnrevealed(currentField, affectedFields);
-                    if (gameOver) break;
+                    if (gameOver) { break; }
                 }
             }
         } else {
@@ -44,9 +46,9 @@ abstract class HostHelper {
             affectedFields = FieldHelper.getAllBombs();
             peer.send(JSON.stringify(new ServerDataObject(ServerEventType.GameOver, affectedFields, elapsedTime)));
         } else {
-            if (affectedFields.length === 0) return; 
+            if (affectedFields.length === 0) { return; }
             revealedFields += affectedFields.length;
-            if (revealedFields === (gameConfiguration.width*gameConfiguration.height) - (gameConfiguration.mineAmount + gameConfiguration.negativeMineAmount)) {
+            if (revealedFields === (gameConfiguration.width * gameConfiguration.height) - (gameConfiguration.mineAmount + gameConfiguration.negativeMineAmount)) {
                 GameHelper.stopTimer();
                 GameHelper.showNewGameScreen();
                 peer.send(JSON.stringify(new ServerDataObject(ServerEventType.GameWon, affectedFields, elapsedTime)));
@@ -56,15 +58,6 @@ abstract class HostHelper {
         }
         Renderer.drawAffectedFields(affectedFields);
     }
-    private static handleClickUnrevealed(field: Field, affectedFields: Field[] = []): boolean {
-        if (FieldHelper.isBomb(field.type)) {
-            return true
-        }
-        FieldHelper.getFieldsForReveal(field, affectedFields);
-        return false
-    }
-
-    public static handleFlag: (field: Field) => void = handleFlagDefault;
 
     public static startNewGame(): void {
         GameHelper.updateConfig(GameHelper.getConfig());
@@ -72,5 +65,12 @@ abstract class HostHelper {
         gameStarted = false;
         revealedFields = 0;
         peer.send(JSON.stringify(new ServerDataObject(ServerEventType.NewGame, gameConfiguration)));
+    }
+    private static handleClickUnrevealed(field: Field, affectedFields: Field[] = []): boolean {
+        if (FieldHelper.isBomb(field.type)) {
+            return true;
+        }
+        FieldHelper.getFieldsForReveal(field, affectedFields);
+        return false;
     }
 }

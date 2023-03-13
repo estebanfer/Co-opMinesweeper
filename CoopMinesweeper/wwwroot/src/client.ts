@@ -99,7 +99,7 @@ otherMouseCanvas.addEventListener("mousemove", (e: MouseEvent): void => {
 
 otherMouseCanvas.addEventListener("click", (e: MouseEvent): void => {
     InputHelper.handleInputClick(e, (_, mousePos) => {
-        clientPeer.send(JSON.stringify(new ClientDataObject(ClientEventType.Click, mousePos)))
+        clientPeer.send(JSON.stringify(new ClientDataObject(ClientEventType.Click, mousePos)));
     });
 });
 

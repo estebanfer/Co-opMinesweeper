@@ -147,24 +147,24 @@ testLatencyButton.addEventListener("click", (): void => {
 {
     const gamemodeChange = () => {
         if (gamemodeSelectElement.value === "2") {
-            negativeBombAmountElement.disabled = false
-            const bombAmount = parseInt(bombAmountElement.value) || 99;
-            const negativeBombAmount = bombAmount * 0.3;
+            negativeBombAmountElement.disabled = false;
+            const bombAmount: number = parseInt(bombAmountElement.value, 10) || 99;
+            const negativeBombAmount: number = bombAmount * 0.3;
             negativeBombAmountElement.value = negativeBombAmount.toFixed();
             bombAmountElement.value = (bombAmount - negativeBombAmount).toFixed();
         } else {
-            negativeBombAmountElement.disabled = true
-            const bombAmount = parseInt(bombAmountElement.value) || 99;
-            const negativeBombAmount = negativeBombAmountElement.value !== "0"
-                ? parseInt(negativeBombAmountElement.value) || 20
+            negativeBombAmountElement.disabled = true;
+            const bombAmount: number = parseInt(bombAmountElement.value, 10) || 99;
+            const negativeBombAmount: number = negativeBombAmountElement.value !== "0"
+                ? parseInt(negativeBombAmountElement.value, 10) || 20
                 : 0;
             bombAmountElement.value = (bombAmount + negativeBombAmount).toFixed();
             negativeBombAmountElement.value = "0";
         }
-    }
+    };
     gamemodeSelectElement.addEventListener("change", gamemodeChange);
-    
-    gameDifficultySelectElement.addEventListener("change", (e) => {
+
+    gameDifficultySelectElement.addEventListener("change", (e: Event) => {
         if (gameDifficultySelectElement.value === "1") {
             bombAmountElement.value = "10";
             widthSettingElement.value = "9";
@@ -181,21 +181,21 @@ testLatencyButton.addEventListener("click", (): void => {
         if (gameDifficultySelectElement.value === "4") {
             advancedSettingsElement.classList.remove("hidden");
         } else {
-            gamemodeChange() //update negative mines amount if on that mode
+            gamemodeChange(); // update negative mines amount if on that mode
             advancedSettingsElement.classList.add("hidden");
         }
-    })
+    });
 }
 
 {
     const onBoardSettingsChange = () => {
-        const bombAmount = parseInt(bombAmountElement.value) || 99;
-        const negativeBombAmount = negativeBombAmountElement.value !== "0"
-            ? parseInt(negativeBombAmountElement.value) || 20
+        const bombAmount: number = parseInt(bombAmountElement.value, 10) || 99;
+        const negativeBombAmount: number = negativeBombAmountElement.value !== "0"
+            ? parseInt(negativeBombAmountElement.value, 10) || 20
             : 0;
-        let height = parseInt(heightSettingElement.value) || 16;
-        let width = parseInt(widthSettingElement.value) || 30;
-        const possibleBombAmount = (width*height) - 9;
+        const height: number = parseInt(heightSettingElement.value, 10) || 16;
+        const width: number = parseInt(widthSettingElement.value, 10) || 30;
+        const possibleBombAmount: number = (width * height) - 9;
         console.log(possibleBombAmount, bombAmount, negativeBombAmount);
         if (possibleBombAmount < bombAmount + negativeBombAmount) {
             bombAmountElement.value = possibleBombAmount.toFixed();

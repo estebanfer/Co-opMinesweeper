@@ -1,23 +1,23 @@
 abstract class FieldHelper {
+
+    public static createBombs: () => void = createBombsDefault;
     public static isFlag(type: FlagType): boolean {
-        return type === FlagType.Flag || type === FlagType.NegativeFlag
+        return type === FlagType.Flag || type === FlagType.NegativeFlag;
     }
     public static isBomb(type: FieldType): boolean {
-        return type === FieldType.Bomb || type === FieldType.NegativeBomb
+        return type === FieldType.Bomb || type === FieldType.NegativeBomb;
     }
-    private static bombValues: Map<FieldType, number> = new Map([[FieldType.Bomb, 1], [FieldType.NegativeBomb, -1]]);
     public static bombValue(type: FieldType): number {
         return this.bombValues.get(type) || 0;
     }
-    private static flagValues: Map<FlagType, number> = new Map([[FlagType.Flag, 1], [FlagType.NegativeFlag, -1]]);
     public static flagValue(type: FlagType): number {
         return this.flagValues.get(type) || 0;
     }
 
     public static initializeFields(width: number = gameConfiguration.width, height: number = gameConfiguration.height): void {
        matrix = new Array<Field[]>(height);
-        let y: number = 2;
-        for (let row: number = 0; row < height; row++) {
+       let y: number = 2;
+       for (let row: number = 0; row < height; row++) {
             matrix[row] = new Array<Field>(width);
             let x: number = 2;
             for (let column: number = 0; column < width; column++) {
@@ -33,18 +33,18 @@ abstract class FieldHelper {
         let row: number;
         let column: number;
 
-        if (y < fieldSize+1) {
+        if (y < fieldSize + 1) {
             row = 0;
-        } else if (y > fieldSize*(gameConfiguration.height-1)) {
-            row = (gameConfiguration.height-1);
+        } else if (y > fieldSize * (gameConfiguration.height - 1)) {
+            row = (gameConfiguration.height - 1);
         } else {
             row = Math.floor((y - 1) / fieldSize);
         }
 
-        if (x < fieldSize+1) {
+        if (x < fieldSize + 1) {
             column = 0;
-        } else if (x > fieldSize*(gameConfiguration.width-1)) {
-            column = (gameConfiguration.width-1);
+        } else if (x > fieldSize * (gameConfiguration.width - 1)) {
+            column = (gameConfiguration.width - 1);
         } else {
             column = Math.floor((x - 1) / fieldSize);
         }
@@ -108,8 +108,8 @@ abstract class FieldHelper {
 
     public static getSurroundingFieldsForChord(field: Field): Field[] {
         return FieldHelper.getSurroundingFields(field).filter(
-            (curField) => !curField.revealed && curField.flag === FlagType.NoFlag
-        )
+            (curField: Field) => !curField.revealed && curField.flag === FlagType.NoFlag
+        );
     }
 
     public static getSurroundingFieldsForReveal(field: Field): Field[] {
@@ -120,51 +120,51 @@ abstract class FieldHelper {
 
         if (matrix[row - 1]) {
             const topLeft: Field = matrix[row - 1][column - 1];
-            if (topLeft && !topLeft.revealed && topLeft.flag == FlagType.NoFlag) {
+            if (topLeft && !topLeft.revealed && topLeft.flag === FlagType.NoFlag) {
                 topLeft.revealed = true;
                 surroundingFields.push(topLeft);
             }
 
             const topCenter: Field = matrix[row - 1][column];
-            if (!topCenter.revealed && topCenter.flag == FlagType.NoFlag) {
+            if (!topCenter.revealed && topCenter.flag === FlagType.NoFlag) {
                 topCenter.revealed = true;
                 surroundingFields.push(topCenter);
             }
 
             const topRight: Field = matrix[row - 1][column + 1];
-            if (topRight && !topRight.revealed && topRight.flag == FlagType.NoFlag) {
+            if (topRight && !topRight.revealed && topRight.flag === FlagType.NoFlag) {
                 topRight.revealed = true;
                 surroundingFields.push(topRight);
             }
         }
 
         const left: Field = matrix[row][column - 1];
-        if (left && !left.revealed && left.flag == FlagType.NoFlag) {
+        if (left && !left.revealed && left.flag === FlagType.NoFlag) {
             left.revealed = true;
             surroundingFields.push(left);
         }
 
         const right: Field = matrix[row][column + 1];
-        if (right && !right.revealed && right.flag == FlagType.NoFlag) {
+        if (right && !right.revealed && right.flag === FlagType.NoFlag) {
             right.revealed = true;
             surroundingFields.push(right);
         }
 
         if (matrix[row + 1]) {
             const bottomLeft: Field = matrix[row + 1][column - 1];
-            if (bottomLeft && !bottomLeft.revealed && bottomLeft.flag == FlagType.NoFlag) {
+            if (bottomLeft && !bottomLeft.revealed && bottomLeft.flag === FlagType.NoFlag) {
                 bottomLeft.revealed = true;
                 surroundingFields.push(bottomLeft);
             }
 
             const bottomCenter: Field = matrix[row + 1][column];
-            if (!bottomCenter.revealed && bottomCenter.flag == FlagType.NoFlag) {
+            if (!bottomCenter.revealed && bottomCenter.flag === FlagType.NoFlag) {
                 bottomCenter.revealed = true;
                 surroundingFields.push(bottomCenter);
             }
 
             const bottomRight: Field = matrix[row + 1][column + 1];
-            if (bottomRight && !bottomRight.revealed && bottomRight.flag == FlagType.NoFlag) {
+            if (bottomRight && !bottomRight.revealed && bottomRight.flag === FlagType.NoFlag) {
                 bottomRight.revealed = true;
                 surroundingFields.push(bottomRight);
             }
@@ -196,8 +196,6 @@ abstract class FieldHelper {
         }
     }
 
-    public static createBombs: () => void = createBombsDefault;
-
     public static createNumbers(): void {
         let field: Field;
         let bombs: number;
@@ -212,10 +210,10 @@ abstract class FieldHelper {
                 }
 
                 surroundingFields = FieldHelper.getSurroundingFields(field);
-                let hasBomb : boolean = false
+                let hasBomb: boolean = false;
                 bombs = surroundingFields.reduce((accumulator: number, currentField: Field) => {
-                    const bombValue = FieldHelper.bombValue(currentField.type);
-                    if (bombValue != 0) { hasBomb = true };
+                    const bombValue: number = FieldHelper.bombValue(currentField.type);
+                    if (bombValue !== 0) { hasBomb = true; }
                     return accumulator + bombValue;
                 }, 0);
 
@@ -246,4 +244,6 @@ abstract class FieldHelper {
 
         return fields;
     }
+    private static bombValues: Map<FieldType, number> = new Map([[FieldType.Bomb, 1], [FieldType.NegativeBomb, -1]]);
+    private static flagValues: Map<FlagType, number> = new Map([[FlagType.Flag, 1], [FlagType.NegativeFlag, -1]]);
 }

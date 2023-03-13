@@ -6,14 +6,14 @@ abstract class Renderer {
         gameCanvasContext.lineWidth = 2;
         gameCanvasContext.strokeStyle = "rgba(255, 255, 255, 1)";
 
-        for (let xIndex: number = 1, line: number = 0; line < gameConfiguration.width+1; xIndex += fieldSize, line++) {
+        for (let xIndex: number = 1, line: number = 0; line < gameConfiguration.width + 1; xIndex += fieldSize, line++) {
             gameCanvasContext.moveTo(xIndex, 0);
-            gameCanvasContext.lineTo(xIndex, (fieldSize*gameConfiguration.height) + 2);
+            gameCanvasContext.lineTo(xIndex, (fieldSize * gameConfiguration.height) + 2);
         }
 
-        for (let yIndex: number = 1, line: number = 0; line < gameConfiguration.height+1; yIndex += fieldSize, line++) {
+        for (let yIndex: number = 1, line: number = 0; line < gameConfiguration.height + 1; yIndex += fieldSize, line++) {
             gameCanvasContext.moveTo(0, yIndex);
-            gameCanvasContext.lineTo((fieldSize*gameConfiguration.width) + 2, yIndex);
+            gameCanvasContext.lineTo((fieldSize * gameConfiguration.width) + 2, yIndex);
         }
 
         gameCanvasContext.stroke();
@@ -26,28 +26,28 @@ abstract class Renderer {
         }
 
         if (previousActiveField) {
-            mouseCanvasContext.clearRect(previousActiveField.startX-fieldSize, previousActiveField.startY-fieldSize, (fieldSize*3)+4, (fieldSize*3)+4); // TO-DO line width
+            mouseCanvasContext.clearRect(previousActiveField.startX - fieldSize, previousActiveField.startY - fieldSize, (fieldSize * 3) + 4, (fieldSize * 3) + 4); // TO-DO line width
         }
 
         previousActiveField = field;
 
         mouseCanvasContext.fillStyle = "rgba(255, 255, 255, 0.5)";
-        mouseCanvasContext.fillRect(field.startX, field.startY, fieldSize-2, fieldSize-2);
-        
-        surroundingFieldsChord && this.renderMouseChord(surroundingFieldsChord);
+        mouseCanvasContext.fillRect(field.startX, field.startY, fieldSize - 2, fieldSize - 2);
+
+        if (surroundingFieldsChord) { this.renderMouseChord(surroundingFieldsChord); }
     }
 
     public static renderMouseChord(fields: Field[]): void {
         for (const curField of fields) {
             mouseCanvasContext.fillStyle = "rgba(0, 0, 0, 0.5)";
-            mouseCanvasContext.fillRect(curField.startX, curField.startY, fieldSize-2, fieldSize-2);
+            mouseCanvasContext.fillRect(curField.startX, curField.startY, fieldSize - 2, fieldSize - 2);
         }
     }
 
     public static clearMouseChord(field: Field): void {
-        mouseCanvasContext.clearRect(field.startX-fieldSize, field.startY-fieldSize, (fieldSize*3)+4, (fieldSize*3)+4);
+        mouseCanvasContext.clearRect(field.startX - fieldSize, field.startY - fieldSize, (fieldSize * 3) + 4, (fieldSize * 3) + 4);
         previousActiveField = undefined;
-        this.renderMouseMove(field)
+        this.renderMouseMove(field);
     }
 
     // todo: Definitely move this method in some other helper for the client only
@@ -56,13 +56,13 @@ abstract class Renderer {
             const field: Field = affectedFields[i];
 
             // Reset field
-            gameCanvasContext.clearRect(field.startX, field.startY, fieldSize-2, fieldSize-2);
+            gameCanvasContext.clearRect(field.startX, field.startY, fieldSize - 2, fieldSize - 2);
 
             if (field.flag === FlagType.Flag) {
-                gameCanvasContext.drawImage(flagImage, field.startX, field.startY, fieldSize-2, fieldSize-2);
+                gameCanvasContext.drawImage(flagImage, field.startX, field.startY, fieldSize - 2, fieldSize - 2);
                 continue;
             } else if (field.flag === FlagType.NegativeFlag) {
-                gameCanvasContext.drawImage(negativeFlagImage, field.startX, field.startY, fieldSize-2, fieldSize-2);
+                gameCanvasContext.drawImage(negativeFlagImage, field.startX, field.startY, fieldSize - 2, fieldSize - 2);
                 continue;
             }
 
@@ -73,18 +73,18 @@ abstract class Renderer {
             if (field.type === FieldType.Bomb) {
                 Renderer.fillField(field, "rgba(203, 66, 66, 1)");
 
-                gameCanvasContext.drawImage(bombImage, field.startX, field.startY, fieldSize-2, fieldSize-2);
+                gameCanvasContext.drawImage(bombImage, field.startX, field.startY, fieldSize - 2, fieldSize - 2);
             } else if (field.type === FieldType.NegativeBomb) {
                 Renderer.fillField(field, "rgba(203, 66, 66, 1)");
 
-                gameCanvasContext.drawImage(negativeBombImage, field.startX, field.startY, fieldSize-2, fieldSize-2);
+                gameCanvasContext.drawImage(negativeBombImage, field.startX, field.startY, fieldSize - 2, fieldSize - 2);
             } else if (field.type === FieldType.Number) {
                 Renderer.fillField(field, "rgba(194, 219, 198, 1)");
 
                 gameCanvasContext.fillStyle = "rgb(0, 0, 0)";
-                const fontSize = 0.625 * fieldSize;
+                const fontSize: number = 0.625 * fieldSize;
                 gameCanvasContext.font = `${fontSize}px Arial, Helvetica, sans-serif`;
-                gameCanvasContext.fillText(`${field.number}`, field.startX + (fieldSize*0.28125), field.startY + (fieldSize*0.71875));
+                gameCanvasContext.fillText(`${field.number}`, field.startX + (fieldSize * 0.28125), field.startY + (fieldSize * 0.71875));
             } else {
                 Renderer.fillField(field, "rgba(194, 219, 198, 1)");
             }
@@ -93,7 +93,7 @@ abstract class Renderer {
 
     public static fillField(field: Field, fillStyle: string): void {
         gameCanvasContext.fillStyle = fillStyle;
-        gameCanvasContext.fillRect(field.startX, field.startY, fieldSize-2, fieldSize-2);
+        gameCanvasContext.fillRect(field.startX, field.startY, fieldSize - 2, fieldSize - 2);
     }
 
     public static drawMouse(position: MousePosition): void {
@@ -101,7 +101,7 @@ abstract class Renderer {
 
         const field: Field = FieldHelper.getField(position.x, position.y);
         otherMouseCanvasContext.fillStyle = "rgba(255, 255, 255, 0.5)";
-        otherMouseCanvasContext.fillRect(field.startX, field.startY, fieldSize-2, fieldSize-2);
+        otherMouseCanvasContext.fillRect(field.startX, field.startY, fieldSize - 2, fieldSize - 2);
 
         otherMouseCanvasContext.drawImage(cursorImage, position.x, position.y);
     }

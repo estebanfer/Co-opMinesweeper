@@ -59,7 +59,7 @@ abstract class GameHelper {
         negativeFlagsLeft = numberOfNegativeFlagsLeft;
         negativeFlagsElement.innerText = negativeFlagsLeft.toString();
     }
-    public static setNegativeFlagsVisibility(visible: boolean):void {
+    public static setNegativeFlagsVisibility(visible: boolean): void {
         visible
         ? negativeFlagsContainerElement.classList.remove("hidden")
         : negativeFlagsContainerElement.classList.add("hidden");
@@ -93,32 +93,32 @@ abstract class GameHelper {
     // #region Config
 
     public static getConfig(): GameConfiguration {
-        const gameConfig = new GameConfiguration()
-        gameConfig.mineAmount = parseInt(bombAmountElement.value) || 99;
-        gameConfig.negativeMineAmount = parseInt(negativeBombAmountElement.value) || 29;
+        const gameConfig: GameConfiguration = new GameConfiguration();
+        gameConfig.mineAmount = parseInt(bombAmountElement.value, 10) || 99;
+        gameConfig.negativeMineAmount = parseInt(negativeBombAmountElement.value, 10) || 29;
         if (gamemodeSelectElement.value === "1") {
-            gameConfig.gamemode = GameMode.Normal
+            gameConfig.gamemode = GameMode.Normal;
             gameConfig.negativeMineAmount = 0;
         } else if (gamemodeSelectElement.value === "2") {
-            gameConfig.gamemode = GameMode.NegativeBombs
+            gameConfig.gamemode = GameMode.NegativeBombs;
         } else {
-            gameConfig.gamemode = GameMode.Normal
+            gameConfig.gamemode = GameMode.Normal;
         }
-        gameConfig.height = parseInt(heightSettingElement.value) || 16;
-        gameConfig.width = parseInt(widthSettingElement.value) || 30;
-        return gameConfig
+        gameConfig.height = parseInt(heightSettingElement.value, 10) || 16;
+        gameConfig.width = parseInt(widthSettingElement.value, 10) || 30;
+        return gameConfig;
     }
-    
+
     public static updateConfig(gameConfig: GameConfiguration): void {
-        gameConfiguration = gameConfig
+        gameConfiguration = gameConfig;
         if (gameConfig.gamemode === GameMode.Normal) {
             gameConfig.negativeMineAmount = 0;
             FieldHelper.createBombs = createBombsDefault;
-            if (this.isHost()) HostHelper.handleFlag = handleFlagDefault;
+            if (this.isHost()) { HostHelper.handleFlag = handleFlagDefault; }
             this.setNegativeFlagsVisibility(false);
         } else {
             FieldHelper.createBombs = createBombsNegative;
-            if (this.isHost()) HostHelper.handleFlag = handleFlagNegativeMode;
+            if (this.isHost()) { HostHelper.handleFlag = handleFlagNegativeMode; }
             this.setNegativeFlagsVisibility(true);
         }
         if (gameConfiguration.height === matrix.length && gameConfiguration.width === matrix[0].length) {
@@ -126,20 +126,20 @@ abstract class GameHelper {
         }
         fieldSize = 32;
         while (gameConfig.width * fieldSize > 960) {
-            fieldSize = fieldSize - 8
+            fieldSize = fieldSize - 8;
         }
         this.updateBoardSize(
-            (gameConfiguration.width*fieldSize)+2,
-            (gameConfiguration.height*fieldSize)+2
-        )
+            (gameConfiguration.width * fieldSize) + 2,
+            (gameConfiguration.height * fieldSize) + 2
+        );
         FieldHelper.initializeFields(gameConfiguration.width, gameConfiguration.height);
     }
 
     public static updateBoardSize(width: number, height: number): void {
-        const [sWidth, sHeight] = [width.toFixed()+"px", height.toFixed()+"px"]
+        const [sWidth, sHeight]: [string, string] = [width.toFixed() + "px", height.toFixed() + "px"];
         canvasHolder.style.width = sWidth;
         canvasHolder.style.height = sHeight;
-        
+
         gameCanvas.style.width = sWidth;
         gameCanvas.style.height = sHeight;
         gameCanvas.width = gameCanvas.offsetWidth;
